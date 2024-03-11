@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="shortcut icon" href="/images/icons8-year-of-dog-96.png" type="image/x-icon">
+<title>Cadastro de Pets</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+
+    body {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700; 
+        margin: 0;
+        padding: 0;
+        background: url('https://images.pexels.com/photos/3628100/pexels-photo-3628100.jpeg?cs=srgb&dl=pexels-edgar-daniel-hern%C3%A1ndez-cervantes-3628100.jpg&fm=jpg&_gl=1*hhlnjv*_ga*MTI5MjA0OTcyLjE3MDY1NzIyMTg.*_ga_8JE65Q40S6*MTcxMDA5OTI4My40LjEuMTcxMDA5OTcxMC4wLjAuMA..');
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+    .container {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #7386bb6e;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
+    input[type="text"],
+    input[type="tel"],
+    input[type="email"] {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+    }
+    button {
+        padding: 10px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        margin-right: 10px;
+    }
+    button:hover {
+        background-color: #0056b3;
+    }
+    .list-container {
+        margin-top: 20px;
+    }
+    .list-item {
+        background-color: #f9f9f9;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 3px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+    .list-item button {
+        margin-left: 10px;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>Cadastro de Pets</h1>
+    <form id="pet-form">
+        <label for="owner-name">Nome do Dono:</label>
+        <input type="text" id="owner-name" required>
+        <label for="phone-number">Número de Contato:</label>
+        <input type="tel" id="phone-number" pattern="[0-9]{10}" required>
+        <label for="email">Email para Contato:</label>
+        <input type="email" id="email" required>
+        <button type="submit" id="submit-btn">Cadastrar</button>
+        <button type="button" id="create-another-btn">Criar Outro</button>
+        <button type="button" id="show-all-btn">Mostrar Todos</button>
+    </form>
+    <div class="list-container" id="list-container"></div>
+</div>
+<script>
+    let pets = [];
+
+    const form = document.getElementById("pet-form");
+    const listContainer = document.getElementById("list-container");
+    const createAnotherBtn = document.getElementById("create-another-btn");
+    const showAllBtn = document.getElementById("show-all-btn");
+
+    form.addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const ownerName = document.getElementById("owner-name").value;
+        const phoneNumber = document.getElementById("phone-number").value;
+        const email = document.getElementById("email").value;
+
+        if (ownerName && phoneNumber && email) {
+            const pet = { ownerName, phoneNumber, email };
+            pets.push(pet);
+
+            updateList();
+
+            // Limpa os campos do formulário
+            form.reset();
+        } else {
+            alert("Por favor, preencha todos os campos.");
+        }
+    });
+
+    createAnotherBtn.addEventListener("click", function() {
+        form.reset();
+    });
+
+    showAllBtn.addEventListener("click", function() {
+        listContainer.innerHTML = "";
+
+        pets.forEach((pet, index) => {
+            const listItem = document.createElement("div");
+            listItem.classList.add("list-item");
+            listItem.innerHTML = `<strong>Nome do Dono:</strong> ${pet.ownerName}<br><strong>Número de Contato:</strong> ${pet.phoneNumber}<br><strong>Email para Contato:</strong> ${pet.email}`;
+            listContainer.appendChild(listItem);
+        });
+    });
+
+    function updateList() {
+        listContainer.innerHTML = "";
+
+        pets.forEach((pet, index) => {
+            const listItem = document.createElement("div");
+            listItem.classList.add("list-item");
+            listItem.innerHTML = `<strong>Nome do Dono:</strong> ${pet.ownerName}<br><strong>Número de Contato:</strong> ${pet.phoneNumber}<br><strong>Email para Contato:</strong> ${pet.email}
+            <button onclick="editPet(${index})">Editar</button>
+            <button onclick="deletePet(${index})">Apagar</button>`;
+            listContainer.appendChild(listItem);
+        });
+    }
+
+    function editPet(index) {
+        const pet = pets[index];
+        document.getElementById("owner-name").value = pet.ownerName;
+        document.getElementById("phone-number").value = pet.phoneNumber;
+        document.getElementById("email").value = pet.email;
+
+        pets.splice(index, 1);
+        updateList();
+    }
+
+    function deletePet(index) {
+        pets.splice(index, 1);
+        updateList();
+    }
+</script>
+</body>
+</html>
